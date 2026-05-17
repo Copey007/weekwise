@@ -14,44 +14,47 @@
 
 ### 1. Browser Extension (Chrome)
 - **Installs in 1 click** from Chrome Web Store
-- **Tracks in background:** active tab, time spent, app switches
-- **No screenshots, no surveillance** — just category + duration data
-- **Daily dashboard in popup:** "Today you spent 3.2 hrs in email, 1.1 hrs in Slack, 0.8 hrs in Salesforce"
+- **Tracks in background:** active tab, time spent, clicks, workflow patterns
+- **No screenshots, no surveillance** — just category + duration + event data
+- **Daily dashboard in popup:** "Today you spent 3.2 hrs in email, clicked 47 times, did 8 repetitive tasks"
 
 ### 2. Web Dashboard
 - Weekly/monthly work breakdown
 - Tool usage patterns (which apps, when, how long)
+- **Click and workflow tracking** (not just time)
 - "Workflow score" — how repetitive vs varied is the week
-- Top time-wasters identified
-- Automation recommendations based on patterns
+- **Automation recommendations** based on actual repetitive clicks
+- Week-over-week comparison
 
 ### 3. Freemium Model
 
 **Free tier:**
 - 7 day tracking history
-- Daily summary
+- Daily summary (time + clicks)
 - 3 workflow insights
 - Basic categories
 
 **Pro ($9/mo):**
 - Unlimited history
-- Full automation recommendations
+- Full automation recommendations (based on click patterns)
 - Export data
 - Priority support
 
-**AI Agent Upsell:**
-- "We noticed you manually enter data into HubSpot 4x/day — our AI agent does that for you"
+**A-Gent Upsell:**
+- "We noticed you manually enter data into HubSpot 22x/week — our AI agent does that for you"
 - Direct link to sales agent demo/trial
-- Commission on sales conversions
+- **The workflow data is the sales pitch** — we already know what they need automated
 
 ---
 
 ## Key Features
 
 ### Extension Features
-- [ ] Active tab tracking (what site/app)
-- [ ] Time categorization (email, crm, chat, docs, web)
-- [ ] Daily popup summary
+- [x] Active tab tracking (what site/app)
+- [x] Time categorization (email, crm, chat, docs, web, other)
+- [ ] Click tracking within apps (Salesforce, HubSpot, Gmail, etc.)
+- [ ] Workflow pattern detection (repetitive sequences)
+- [x] Daily popup summary
 - [ ] Manual log entry (for offline work)
 - [ ] Distraction detection ("You checked email 47 times today")
 
@@ -59,28 +62,20 @@
 - [ ] Weekly heat map (activity by hour/day)
 - [ ] Category breakdown chart
 - [ ] Tool usage ranking
-- [ ] Repetitive task detection
-- [ ] Automation opportunity score
+- [ ] **Click frequency analysis**
+- [ ] **Repetitive workflow detection**
+- [ ] **Automation opportunity score** (based on click patterns)
 - [ ] Week-over-week comparison
 
 ### Upgrade Flow
 - [ ] "Unlock with Pro" prompts at key data points
 - [ ] "See what we can automate" CTA
+- [ ] **A-Gent recommendation engine** (uses workflow data)
 - [ ] Smooth transition to sales agent onboarding
 
 ---
 
-## Tech Stack
-
-- **Extension:** Chrome Extension API (Manifest V3), JavaScript
-- **Backend:** Node.js + Express (same Mac mini hosting)
-- **Database:** SQLite (simple, local, no setup)
-- **Dashboard:** Static HTML + API calls (same as gtm-revolution-web)
-- **Auth:** Simple email capture (Mailchimp or CSV for MVP)
-
----
-
-## Data Model
+## Workflow Data Model
 
 ```javascript
 // What we track per user
@@ -91,26 +86,54 @@ User {
   plan: 'free' | 'pro'
 }
 
+// Session = time on a tab
 Session {
   id: uuid,
   user_id: uuid,
   start_time: timestamp,
   end_time: timestamp,
   category: string,  // 'email', 'crm', 'chat', 'docs', 'web', 'other'
-  tool_name: string, // 'gmail', 'salesforce', 'slack', 'etc'
-  domain: string      // 'mail.google.com'
+  tool_name: string,
+  domain: string,
+  click_count: number  // clicks during this session
 }
 
-// Aggregated weekly data (for dashboard)
-WeeklyReport {
+// WorkflowEvent = specific action within an app
+WorkflowEvent {
+  id: uuid,
   user_id: uuid,
-  week_start: date,
-  total_hours: number,
-  top_tools: [{tool, hours, percentage}],
-  automation_opportunities: [string],
-  workflow_score: number // 0-100
+  session_id: uuid,
+  timestamp: timestamp,
+  domain: string,
+  action_type: string,  // 'form_submit', 'button_click', 'page_view', 'data_entry'
+  action_detail: string, // 'updated_contact', 'sent_email', 'created_task'
+  repetition_count: number  // how many times this week
+}
+
+// AutomationOpportunity (computed from workflow data)
+AutomationOpportunity {
+  user_id: uuid,
+  action: string,  // 'Manually update Salesforce contact'
+  frequency: string,  // '22x per week'
+  category: string,  // 'crm'
+  recommendation: string,  // 'We can automate this for $49/mo'
+  agent_upgrade: boolean  // qualifies for A-Gent upsell
 }
 ```
+
+---
+
+## Data That Enables A-Gent Upsell
+
+When a user upgrades to A-Gent, we already know:
+
+- ✅ Which CRM they use (Salesforce vs HubSpot vs none)
+- ✅ How many times/week they manually enter data
+- ✅ Which tools they're weakest at (low time, high clicks = struggle)
+- ✅ What their typical workday looks like (pattern analysis)
+- ✅ Where the time sinks are
+
+**The sales pitch is pre-built:** "We tracked your workflow for 2 weeks. You spend 4.5 hours/week on manual data entry into Salesforce. We can automate that."
 
 ---
 
@@ -119,21 +142,21 @@ WeeklyReport {
 ```
 User installs extension (Chrome Web Store)
          ↓
-Sees popup: "Tracking started! Check back tomorrow for insights"
+Email capture → Tracking starts
          ↓
-Day 1 complete → Daily summary in popup
+Day 1: "Today: 3.2 hrs tracked, 47 clicks, 5 workflows"
          ↓
-Day 7 → Sees weekly dashboard (free tier)
+Day 7: Weekly dashboard (free) — "You do 18 repetitive tasks/week"
          ↓
-Sees "Upgrade to see automation recommendations"
+Pro prompt: "Unlock automation recommendations"
          ↓
-Pays $9/mo → Sees full insights + automation opportunities
+Pays $9/mo → Sees full insights + specific automation opportunities
          ↓
 Clicks "Automate this" on repetitive task
          ↓
-Redirected to sales agent trial/demo
+A-Gent recommendation: "We automate exactly this workflow"
          ↓
-Sales agent converts → commission or subscription
+A-Gent trial/demo → Convert to $99/mo subscription
 ```
 
 ---
@@ -141,30 +164,32 @@ Sales agent converts → commission or subscription
 ## MVP Scope (First 2 Weeks)
 
 ### Week 1: Extension + Basic Tracking
-- [ ] Chrome extension scaffold
-- [ ] Track active tab + duration
-- [ ] Store in local SQLite
-- [ ] Daily popup summary
-- [ ] Basic categories
+- [x] Chrome extension scaffold
+- [x] Track active tab + duration
+- [x] Store in local storage
+- [x] Daily popup summary
+- [x] Basic categories
+- [ ] Click counting infrastructure
 
 ### Week 2: Dashboard + Freemium
 - [ ] Web dashboard with charts
 - [ ] Email capture (free tier)
 - [ ] 7-day history limit (free)
 - [ ] Pro upgrade flow (Stripe)
-- [ ] Automation recommendations
+- [ ] Automation recommendations engine
 
-### Week 3+: Sales Agent Integration
-- [ ] "What we can automate" section
-- [ ] Link to sales agent demo
-- [ ] Track conversions
+### Week 3+: Workflow Intelligence
+- [ ] Content scripts for major apps (Salesforce, HubSpot, Gmail)
+- [ ] Click pattern detection
+- [ ] A-Gent recommendation engine
+- [ ] Integration with sales agent backend
 
 ---
 
 ## Branding
 
 - **Name:** WeekWise (or suggest alternatives)
-- **Colors:** Match GTM Revolution — dark text, pink accent
+- **Colors:** Match GTM Revolution — dark text, pink accent (#d44a9a)
 - **Font:** Caveat for logo, Inter for UI
 - **Positioning:** "Workflow intelligence for revenue teams"
 
@@ -179,7 +204,7 @@ Sales agent converts → commission or subscription
 | Clockify | Free time tracker | Free |
 | Wave | Email tracking | $6/mo |
 
-**Differentiation:** Not just tracking — the automation recommendations and path to AI agent is the unique value prop.
+**Differentiation:** Not just tracking — click patterns + automation recommendations + path to AI agent is the unique value prop.
 
 ---
 
@@ -187,7 +212,7 @@ Sales agent converts → commission or subscription
 
 - Install rate (target: 100 installs in week 1)
 - Free → Pro conversion (target: 3-5%)
-- Pro → Agent upgrade (target: 10% of Pro)
+- Pro → A-Gent upgrade (target: 10% of Pro)
 - Time to first automation booked
 
 ---
@@ -195,15 +220,7 @@ Sales agent converts → commission or subscription
 ## Next Steps
 
 1. Create Chrome Web Store developer account ($5 one-time)
-2. Build extension scaffold
+2. Build extension scaffold (DONE)
 3. Deploy to Chrome Web Store (review takes 1-3 days)
 4. Launch with blog post / social
 5. Track metrics, iterate
-
----
-
-**Questions to answer:**
-- Email capture at install or first dashboard view?
-- Stripe for payments or PayPal?
-- Single user or team-based pricing?
-- Chrome only or also Firefox/Safari?
