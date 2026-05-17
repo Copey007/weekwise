@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard — WeekWise</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary: #111;
+      --accent: #d44a9a;
+      --accent-light: #f5d0e8;
+      --bg: #f7f7f7;
+      --white: #fff;
+      --success: #10b981;
+      --warning: #f59e0b;
+      --info: #3b82f6;
+    }
+    
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--bg);
+      color: var(--primary);
+      line-height: 1.6;
+    }
+    
+    .logo { font-family: 'Caveat', cursive; font-size: 1.75rem; font-weight: 700; }
+    .logo span { color: var(--accent); }
+    
+    /* Layout */
+    .app { display: flex; min-height: 100vh; }
+    
+    .sidebar {
+      width: 260px;
+      background: var(--white);
+      border-right: 1px solid #eee;
+      padding: 1.5rem;
+      position: fixed;
+      height: 100vh;
+      overflow-y: auto;
+    }
+    
+    .sidebar-logo { margin-bottom: 2rem; padding-bottom: 1.5rem; border-bottom: 1px solid #eee; }
+    
+    .sidebar nav a {
+      display: block;
+      padding: 0.75rem 1rem;
+      color: #666;
+      text-decoration: none;
+      border-radius: 8px;
+      font-weight: 500;
+      margin-bottom: 0.25rem;
+      font-size: 0.9rem;
+    }
+    
+    .sidebar nav a:hover, .sidebar nav a.active {
+      background: var(--accent-light);
+      color: var(--accent);
+    }
+    
+    .main-content { flex: 1; margin-left: 260px; padding: 2rem 3rem; }
+    
+    /* Header */
+    .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; }
+    .header h1 { font-size: 1.75rem; }
+    
+    .btn {
+      padding: 0.75rem 1.5rem;
+      border-radius: 8px;
+      font-weight: 600;
+      cursor: pointer;
+      border: none;
+      font-size: 0.9rem;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    
+    .btn-primary { background: var(--accent); color: white; }
+    .btn-primary:hover { background: #c03d87; }
+    .btn-secondary { background: var(--white); color: var(--primary); border: 1px solid #ddd; }
+    .btn-outline { background: transparent; border: 2px solid var(--primary); color: var(--primary); }
+    
+    /* Stats */
+    .stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.5rem; margin-bottom: 2rem; }
+    
+    .stat-card {
+      background: var(--white);
+      padding: 1.5rem;
+      border-radius: 12px;
+      border: 1px solid #eee;
+    }
+    
+    .stat-label { color: #888; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.5px; }
+    .stat-value { font-size: 2rem; font-weight: 700; margin-top: 0.5rem; }
+    .stat-sub { font-size: 0.85rem; color: var(--success); margin-top: 0.25rem; }
+    
+    /* Cards */
+    .card {
+      background: var(--white);
+      border-radius: 12px;
+      border: 1px solid #eee;
+      margin-bottom: 1.5rem;
+      overflow: hidden;
+    }
+    
+    .card-header { padding: 1.25rem 1.5rem; border-bottom: 1px solid #eee; display: flex; justify-content: space-between; align-items: center; }
+    .card-header h2 { font-size: 1.1rem; }
+    
+    /* Category Breakdown */
+    .category-chart { padding: 1.5rem; }
+    
+    .category-row {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      padding: 0.75rem 0;
+      border-bottom: 1px solid #f0f0f0;
+    }
+    
+    .category-row:last-child { border-bottom: none; }
+    
+    .category-dot { width: 12px; height: 12px; border-radius: 50%; }
+    .category-name { flex: 1; font-weight: 500; }
+    .category-bar-wrap { width: 200px; height: 8px; background: #eee; border-radius: 4px; overflow: hidden; }
+    .category-bar { height: 100%; border-radius: 4px; }
+    .category-time { width: 60px; text-align: right; color: #888; font-size: 0.9rem; }
+    
+    .email .category-dot { background: var(--info); }
+    .crm .category-bar { background: var(--success); }
+    .chat .category-dot { background: var(--warning); }
+    .docs .category-dot { background: #8b5cf6; }
+    .web .category-dot { background: #6b7280; }
+    
+    /* Automation Opportunities */
+    .opportunity-card {
+      padding: 1.25rem 1.5rem;
+      border-bottom: 1px solid #eee;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+    
+    .opportunity-card:last-child { border-bottom: none; }
+    
+    .opportunity-icon { font-size: 1.5rem; }
+    .opportunity-info { flex: 1; }
+    .opportunity-info h3 { font-size: 0.95rem; margin-bottom: 0.25rem; }
+    .opportunity-info p { font-size: 0.85rem; color: #888; }
+    .opportunity-savings { color: var(--success); font-weight: 600; font-size: 0.9rem; }
+    
+    .upgrade-banner {
+      background: linear-gradient(135deg, var(--accent) 0%, #e05a8a 100%);
+      color: white;
+      padding: 2rem;
+      border-radius: 12px;
+      margin-bottom: 2rem;
+      text-align: center;
+    }
+    
+    .upgrade-banner h2 { font-size: 1.5rem; margin-bottom: 0.5rem; }
+    .upgrade-banner p { opacity: 0.9; margin-bottom: 1.5rem; }
+    .upgrade-banner .btn { background: white; color: var(--accent); }
+    
+    /* Chart placeholder */
+    .chart-placeholder {
+      height: 200px;
+      background: linear-gradient(90deg, #f0f0f0 0%, #e0e0e0 50%, #f0f0f0 100%);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #888;
+      font-size: 0.9rem;
+    }
+    
+    /* Footer nav */
+    .footer-nav { margin-top: auto; padding-top: 2rem; }
+    .footer-nav a { color: #888; text-decoration: none; font-size: 0.85rem; }
+  </style>
+</head>
+<body>
+
+<div class="app">
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <div class="sidebar-logo">
+      <div class="logo">Week<span>Wise</span></div>
+    </div>
+    
+    <nav>
+      <a href="#dashboard" class="active">Dashboard</a>
+      <a href="#workflows">Workflows</a>
+      <a href="#automation">Automation</a>
+      <a href="#settings">Settings</a>
+    </nav>
+    
+    <div class="footer-nav">
+      <a href="/">← Back to Home</a>
+    </div>
+  </aside>
+
+  <!-- Main Content -->
+  <main class="main-content">
+    <div class="header">
+      <h1>Your Week</h1>
+      <div style="display: flex; gap: 0.75rem;">
+        <button class="btn btn-secondary">📊 Export</button>
+        <button class="btn btn-primary">Upgrade to Pro</button>
+      </div>
+    </div>
+
+    <!-- Upgrade Banner (show only on free) -->
+    <div class="upgrade-banner">
+      <h2>Unlock Full Automation Insights</h2>
+      <p>See exactly what tasks to automate and how much time you'd save.</p>
+      <button class="btn">Start 7-Day Free Trial →</button>
+    </div>
+
+    <!-- Stats -->
+    <div class="stats">
+      <div class="stat-card">
+        <div class="stat-label">Total Time</div>
+        <div class="stat-value">38.5<span style="font-size: 1rem;">hrs</span></div>
+        <div class="stat-sub">↑ 3.2 hrs vs last week</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Clicks Tracked</div>
+        <div class="stat-value">2,847</div>
+        <div class="stat-sub">↑ 12% productivity</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Repetitive Tasks</div>
+        <div class="stat-value">67</div>
+        <div class="stat-sub">↑ 8 new patterns</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Savings Potential</div>
+        <div class="stat-value" style="color: var(--success);">6.5<span style="font-size: 1rem;">hrs/wk</span></div>
+        <div class="stat-sub">if automated</div>
+      </div>
+    </div>
+
+    <!-- Main Grid -->
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;">
+      
+      <!-- Time by Category -->
+      <div class="card">
+        <div class="card-header">
+          <h2>Time by Category</h2>
+          <span style="color: #888; font-size: 0.85rem;">This week</span>
+        </div>
+        <div class="category-chart">
+          <div class="category-row email">
+            <div class="category-dot" style="background: var(--info);"></div>
+            <span class="category-name">Email</span>
+            <div class="category-bar-wrap">
+              <div class="category-bar" style="width: 85%; background: var(--info);"></div>
+            </div>
+            <span class="category-time">12.5 hrs</span>
+          </div>
+          <div class="category-row crm">
+            <div class="category-dot" style="background: var(--success);"></div>
+            <span class="category-name">CRM</span>
+            <div class="category-bar-wrap">
+              <div class="category-bar" style="width: 65%; background: var(--success);"></div>
+            </div>
+            <span class="category-time">9.2 hrs</span>
+          </div>
+          <div class="category-row chat">
+            <div class="category-dot" style="background: var(--warning);"></div>
+            <span class="category-name">Chat</span>
+            <div class="category-bar-wrap">
+              <div class="category-bar" style="width: 45%; background: var(--warning);"></div>
+            </div>
+            <span class="category-time">6.8 hrs</span>
+          </div>
+          <div class="category-row docs">
+            <div class="category-dot" style="background: #8b5cf6;"></div>
+            <span class="category-name">Docs</span>
+            <div class="category-bar-wrap">
+              <div class="category-bar" style="width: 30%; background: #8b5cf6;"></div>
+            </div>
+            <span class="category-time">5.5 hrs</span>
+          </div>
+          <div class="category-row web">
+            <div class="category-dot" style="background: #6b7280;"></div>
+            <span class="category-name">Research/Web</span>
+            <div class="category-bar-wrap">
+              <div class="category-bar" style="width: 20%; background: #6b7280;"></div>
+            </div>
+            <span class="category-time">4.5 hrs</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Top Tools -->
+      <div class="card">
+        <div class="card-header">
+          <h2>Top Tools</h2>
+          <span style="color: #888; font-size: 0.85rem;">by usage time</span>
+        </div>
+        <div style="padding: 1rem 1.5rem;">
+          <div style="display: flex; align-items: center; gap: 0.75rem; padding: 0.75rem 0; border-bottom: 1px solid #f0f0f0;">
+            <span style="font-size: 1.25rem;">📧</span>
+            <span style="flex: 1; font-weight: 500;">Gmail</span>
+            <span style="color: #888; font-size: 0.85rem;">8.2 hrs</span>
+          </div>
+          <div style="display: flex; align-items: center; gap: 0.75rem; padding: 0.75rem 0; border-bottom: 1px solid #f0f0f0;">
+            <span style="font-size: 1.25rem;">💼</span>
+            <span style="flex: 1; font-weight: 500;">Salesforce</span>
+            <span style="color: #888; font-size: 0.85rem;">6.1 hrs</span>
+          </div>
+          <div style="display: flex; align-items: center; gap: 0.75rem; padding: 0.75rem 0; border-bottom: 1px solid #f0f0f0;">
+            <span style="font-size: 1.25rem;">💬</span>
+            <span style="flex: 1; font-weight: 500;">Slack</span>
+            <span style="color: #888; font-size: 0.85rem;">4.8 hrs</span>
+          </div>
+          <div style="display: flex; align-items: center; gap: 0.75rem; padding: 0.75rem 0; border-bottom: 1px solid #f0f0f0;">
+            <span style="font-size: 1.25rem;">📊</span>
+            <span style="flex: 1; font-weight: 500;">HubSpot</span>
+            <span style="color: #888; font-size: 0.85rem;">3.1 hrs</span>
+          </div>
+          <div style="display: flex; align-items: center; gap: 0.75rem; padding: 0.75rem 0;">
+            <span style="font-size: 1.25rem;">📄</span>
+            <span style="flex: 1; font-weight: 500;">Google Docs</span>
+            <span style="color: #888; font-size: 0.85rem;">2.9 hrs</span>
+          </div>
+        </div>
+      </div>
+      
+    </div>
+
+    <!-- Automation Opportunities -->
+    <div class="card">
+      <div class="card-header">
+        <h2>🤖 Automation Opportunities</h2>
+        <span style="background: var(--accent-light); color: var(--accent); padding: 0.25rem 0.75rem; border-radius: 20px; font-size: 0.8rem; font-weight: 600;">Pro Feature</span>
+      </div>
+      
+      <div class="opportunity-card">
+        <div class="opportunity-icon">📝</div>
+        <div class="opportunity-info">
+          <h3>Manual Data Entry into Salesforce</h3>
+          <p>You do this 22x per week — about 2.5 hours of manual work</p>
+        </div>
+        <div style="text-align: right;">
+          <div class="opportunity-savings">Save 2.5 hrs/wk</div>
+          <a href="/upgrade" style="font-size: 0.85rem; color: var(--accent);">Automate this →</a>
+        </div>
+      </div>
+      
+      <div class="opportunity-card">
+        <div class="opportunity-icon">📧</div>
+        <div class="opportunity-info">
+          <h3>Repetitive Email Follow-ups</h3>
+          <p>You're sending 15 similar follow-up emails per day manually</p>
+        </div>
+        <div style="text-align: right;">
+          <div class="opportunity-savings">Save 1.8 hrs/wk</div>
+          <a href="/upgrade" style="font-size: 0.85rem; color: var(--accent);">Automate this →</a>
+        </div>
+      </div>
+      
+      <div class="opportunity-card">
+        <div class="opportunity-icon">📅</div>
+        <div class="opportunity-info">
+          <h3>Meeting Notes to CRM</h3>
+          <p>After every call, you manually update 3 CRM fields</p>
+        </div>
+        <div style="text-align: right;">
+          <div class="opportunity-savings">Save 1.2 hrs/wk</div>
+          <a href="/upgrade" style="font-size: 0.85rem; color: var(--accent);">Automate this →</a>
+        </div>
+      </div>
+      
+      <div class="opportunity-card" style="background: var(--accent-light); border: none;">
+        <div class="opportunity-icon">🚀</div>
+        <div class="opportunity-info">
+          <h3 style="color: var(--accent);">Upgrade to A-Gent for Full Automation</h3>
+          <p>Get AI-powered automation for ALL repetitive tasks + ongoing optimization</p>
+        </div>
+        <button class="btn btn-primary" style="background: var(--accent);">Learn More →</button>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+</body>
+</html>

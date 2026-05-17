@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>WeekWise — Workflow Intelligence for Revenue Teams</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary: #111;
+      --accent: #d44a9a;
+      --accent-light: #f5d0e8;
+      --bg: #f7f7f7;
+      --white: #fff;
+      --text: #444;
+      --muted: #888;
+    }
+    
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    
+    body {
+      font-family: 'Inter', sans-serif;
+      color: var(--primary);
+      line-height: 1.6;
+      background: var(--white);
+    }
+    
+    .logo { font-family: 'Caveat', cursive; font-size: 2rem; font-weight: 700; }
+    .logo span { color: var(--accent); }
+    
+    /* Nav */
+    nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1.5rem 5%;
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+    
+    nav ul { display: flex; list-style: none; gap: 2rem; }
+    nav a { text-decoration: none; color: var(--text); font-weight: 500; font-size: 0.95rem; }
+    nav a:hover { color: var(--accent); }
+    
+    .btn {
+      padding: 0.75rem 1.5rem;
+      border-radius: 8px;
+      font-weight: 600;
+      cursor: pointer;
+      border: none;
+      font-size: 0.95rem;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      transition: all 0.2s;
+    }
+    
+    .btn-primary { background: var(--accent); color: white; }
+    .btn-primary:hover { background: #c03d87; transform: translateY(-1px); }
+    .btn-outline { background: transparent; border: 2px solid var(--primary); color: var(--primary); }
+    .btn-outline:hover { background: var(--primary); color: white; }
+    
+    /* Hero */
+    .hero {
+      text-align: center;
+      padding: 5rem 5% 3rem;
+      background: linear-gradient(135deg, #fafafa 0%, #f0f0f0 100%);
+    }
+    
+    .hero h1 {
+      font-size: 3.5rem;
+      font-weight: 700;
+      margin-bottom: 1.5rem;
+      line-height: 1.1;
+    }
+    
+    .hero h1 .accent {
+      color: var(--accent);
+      font-family: 'Caveat', cursive;
+      font-size: 4rem;
+    }
+    
+    .hero p {
+      font-size: 1.25rem;
+      color: var(--muted);
+      max-width: 600px;
+      margin: 0 auto 2.5rem;
+    }
+    
+    /* Features */
+    .features { padding: 4rem 5%; max-width: 1200px; margin: 0 auto; }
+    .features h2 { text-align: center; font-size: 2.5rem; margin-bottom: 3rem; }
+    
+    .features-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 2rem; }
+    
+    .feature-card {
+      padding: 2rem;
+      border-radius: 16px;
+      background: var(--bg);
+      border: 1px solid #eee;
+      transition: transform 0.2s;
+    }
+    
+    .feature-card:hover { transform: translateY(-4px); }
+    
+    .feature-icon { font-size: 2rem; margin-bottom: 1rem; }
+    .feature-card h3 { font-size: 1.2rem; margin-bottom: 0.75rem; }
+    .feature-card p { color: var(--muted); font-size: 0.95rem; }
+    
+    /* How it works */
+    .how-it-works {
+      padding: 4rem 5%;
+      background: var(--primary);
+      color: white;
+    }
+    
+    .how-it-works h2 { text-align: center; font-size: 2.5rem; margin-bottom: 3rem; }
+    
+    .steps {
+      display: flex;
+      justify-content: center;
+      gap: 3rem;
+      flex-wrap: wrap;
+      max-width: 1000px;
+      margin: 0 auto;
+    }
+    
+    .step { text-align: center; max-width: 220px; }
+    .step-num {
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      background: var(--accent);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+      font-weight: 700;
+      margin: 0 auto 1rem;
+    }
+    
+    .step h3 { margin-bottom: 0.5rem; }
+    .step p { color: #aaa; font-size: 0.9rem; }
+    
+    /* Pricing */
+    .pricing { padding: 5rem 5%; max-width: 900px; margin: 0 auto; text-align: center; }
+    .pricing h2 { font-size: 2.5rem; margin-bottom: 1rem; }
+    .pricing-subtitle { color: var(--muted); margin-bottom: 3rem; }
+    
+    .pricing-card {
+      border: 2px solid var(--primary);
+      border-radius: 20px;
+      padding: 3rem;
+      max-width: 450px;
+      margin: 0 auto;
+    }
+    
+    .badge {
+      background: var(--accent);
+      color: white;
+      padding: 0.5rem 1.5rem;
+      border-radius: 20px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      display: inline-block;
+      margin-bottom: 1rem;
+    }
+    
+    .price { font-size: 3.5rem; font-weight: 700; margin: 1rem 0; }
+    .price span { font-size: 1rem; color: var(--muted); font-weight: 400; }
+    
+    .features-list { list-style: none; text-align: left; margin: 2rem 0; }
+    .features-list li { padding: 0.75rem 0; border-bottom: 1px solid #eee; }
+    .features-list li::before { content: "✓"; color: var(--accent); margin-right: 0.75rem; font-weight: 600; }
+    
+    /* CTA */
+    .cta { text-align: center; padding: 5rem 5%; background: var(--accent-light); }
+    .cta h2 { font-size: 2.5rem; margin-bottom: 1rem; }
+    .cta p { margin-bottom: 2rem; }
+    
+    /* Footer */
+    footer { padding: 2rem 5%; text-align: center; border-top: 1px solid #eee; }
+    footer p { color: var(--muted); font-size: 0.9rem; }
+    
+    /* Chrome button */
+    .chrome-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: var(--primary);
+      color: white;
+      padding: 0.75rem 1.5rem;
+      border-radius: 8px;
+      text-decoration: none;
+      font-weight: 600;
+      margin-top: 1.5rem;
+    }
+    
+    .chrome-badge:hover { background: #333; }
+    .chrome-badge svg { width: 20px; height: 20px; }
+  </style>
+</head>
+<body>
+
+<!-- Navigation -->
+<nav>
+  <div class="logo">Week<span>Wise</span></div>
+  <ul>
+    <li><a href="#features">Features</a></li>
+    <li><a href="#how">How it Works</a></li>
+    <li><a href="#pricing">Pricing</a></li>
+    <li><a href="/dashboard">Dashboard</a></li>
+  </ul>
+  <a href="#" class="btn btn-primary">Get Started Free</a>
+</nav>
+
+<!-- Hero -->
+<section class="hero">
+  <h1>Know where your week goes.<br><span class="accent">Automate what matters.</span></h1>
+  <p>The browser extension that tracks your workflows, reveals repetitive tasks, and tells you exactly what to automate — all in one click.</p>
+  <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
+    <a href="#" class="btn btn-primary">Add to Chrome — Free</a>
+    <a href="#how" class="btn btn-outline">See How it Works</a>
+  </div>
+</section>
+
+<!-- Features -->
+<section class="features" id="features">
+  <h2>What WeekWise Tracks</h2>
+  <div class="features-grid">
+    <div class="feature-card">
+      <div class="feature-icon">⏱️</div>
+      <h3>Time Tracking</h3>
+      <p>Automatic tracking of time spent in every app. Know exactly where your hours go — email, CRM, chat, docs, research.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">🖱️</div>
+      <h3>Click Counting</h3>
+      <p>Track how many times you perform actions — form submissions, data entry, updates. Find the repetitive patterns.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">🔄</div>
+      <h3>Workflow Patterns</h3>
+      <p>Detect sequences you repeat daily. "You update Salesforce contacts 22x/week" — that's automation opportunity.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">🤖</div>
+      <h3>Automation Recommendations</h3>
+      <p>AI-powered suggestions based on your actual workflow data. Not guesses — real insights from your clicks.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">📊</div>
+      <h3>Weekly Reports</h3>
+      <p>See your week in charts. Category breakdowns, tool rankings, productivity scores, and week-over-week trends.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">🚀</div>
+      <h3>Path to AI Agent</h3>
+      <p>When you're ready, upgrade to full automation with A-Gent — your personal AI sales agent that does the work for you.</p>
+    </div>
+  </div>
+</section>
+
+<!-- How it Works -->
+<section class="how-it-works" id="how">
+  <h2>How it Works</h2>
+  <div class="steps">
+    <div class="step">
+      <div class="step-num">1</div>
+      <h3>Install Extension</h3>
+      <p>One-click install from Chrome Web Store</p>
+    </div>
+    <div class="step">
+      <div class="step-num">2</div>
+      <h3>Start Browsing</h3>
+      <p>Extension tracks in background, no effort needed</p>
+    </div>
+    <div class="step">
+      <div class="step-num">3</div>
+      <h3>See Your Patterns</h3>
+      <p>Daily popup shows time + clicks, weekly dashboard shows insights</p>
+    </div>
+    <div class="step">
+      <div class="step-num">4</div>
+      <h3>Automate</h3>
+      <p>Upgrade to Pro for automation recommendations, then to A-Gent for full AI agent</p>
+    </div>
+  </div>
+</section>
+
+<!-- Pricing -->
+<section class="pricing" id="pricing">
+  <h2>Simple, Transparent Pricing</h2>
+  <p class="pricing-subtitle">Start free. Upgrade when you see value.</p>
+  
+  <div class="pricing-card">
+    <span class="badge">Free Forever</span>
+    <h3>Basic</h3>
+    <div class="price">$0</div>
+    <ul class="features-list">
+      <li>Unlimited time tracking</li>
+      <li>Basic category breakdown</li>
+      <li>7-day history</li>
+      <li>Daily popup summary</li>
+      <li>3 automation insights</li>
+    </ul>
+    <a href="#" class="btn btn-outline">Get Started Free</a>
+  </div>
+  
+  <div class="pricing-card" style="margin-top: 2rem; border-color: var(--accent);">
+    <span class="badge" style="background: var(--accent);">Recommended</span>
+    <h3>Pro</h3>
+    <div class="price">$9<span>/month</span></div>
+    <ul class="features-list">
+      <li>Everything in Free</li>
+      <li>Unlimited history</li>
+      <li>Click pattern analysis</li>
+      <li>Full automation recommendations</li>
+      <li>Export data</li>
+      <li>Priority support</li>
+    </ul>
+    <a href="#" class="btn btn-primary">Start 7-Day Free Trial</a>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta">
+  <h2>Ready to work smarter?</h2>
+  <p>Join revenue teams who know exactly where their time goes.</p>
+  <a href="#" class="btn btn-primary" style="background: var(--accent); font-size: 1.1rem; padding: 1rem 2rem;">
+    Add to Chrome — Free
+  </a>
+</section>
+
+<!-- Footer -->
+<footer>
+  <div class="logo" style="margin-bottom: 1rem;">Week<span>Wise</span></div>
+  <p>Workflow intelligence for revenue teams</p>
+  <p style="margin-top: 1rem; font-size: 0.8rem; color: #aaa;">Part of the GTM Revolution ecosystem</p>
+</footer>
+
+</body>
+</html>
